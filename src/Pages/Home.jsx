@@ -1,6 +1,6 @@
 // react imports
 import React from 'react';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 
 // bootstrap imports
 import Container from 'react-bootstrap/Container';
@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import AppContext from '../Context/AppContext';
 
 ////// TODO
 // // current task(s)
@@ -23,6 +24,7 @@ import Modal from 'react-bootstrap/Modal';
 // add bottom border to navbar container
 // add reset button
 // place current round/phase into a container for cleaner look
+// change long break in switchPhase to work in multiples of 4
 // (BONUS) add task manager
 // (BONUS) use localStorage to store state
 //////
@@ -30,6 +32,9 @@ import Modal from 'react-bootstrap/Modal';
 // // // CODE
 
 function Home() {
+  // // context
+  const { settings, showModal, handleCloseModal } = useContext(AppContext);
+
   // // state
   const [currentPhase, setCurrentPhase] = useState('focus');
 
@@ -38,19 +43,6 @@ function Home() {
   const [timeRunning, setTimeRunning] = useState(false);
 
   const [currentInterval, setCurrentInterval] = useState(1);
-
-  const [settings, setSettings] = useState({
-    focus: 25,
-    shortBreak: 5,
-    longBreak: 15,
-    longBreakInterval: 4,
-  });
-
-  /// modal state
-  const [showModal, setShowModal] = useState(false);
-
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
 
   // // refs
 
@@ -240,7 +232,22 @@ function Home() {
           </Col>
         </Row>
       </Container>
-      <div></div>
+      <div>
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Settings</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Footer>
+            <Button variant='secondary' onClick={handleCloseModal}>
+              Close
+            </Button>
+            <Button variant='primary' onClick={handleCloseModal}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
     </>
   );
 }

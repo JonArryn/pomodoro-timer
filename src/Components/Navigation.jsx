@@ -1,8 +1,8 @@
 // react imports
 import React from 'react';
+import { useContext } from 'react';
 
 // bootstrap component imports
-import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,12 +11,18 @@ import Button from 'react-bootstrap/Button';
 // asset imports
 import { ReactComponent as GearFill } from '../Assets/gear-fill.svg';
 
+// context
+import AppContext from '../Context/AppContext';
+
 ////// TODO
 // create a white bottom border on navbar for some separation
 //////
 
 // // // CODE
 function Navigation() {
+  // context
+  const { handleShowModal } = useContext(AppContext);
+
   return (
     <nav className='py-2'>
       <Container className='text-center'>
@@ -27,7 +33,7 @@ function Navigation() {
             </h2>
           </Col>
           <Col>
-            <Button variant='outline-light'>
+            <Button variant='outline-light' onClick={handleShowModal}>
               <div>
                 <GearFill />
                 <span className='align-middle'> Settings</span>
