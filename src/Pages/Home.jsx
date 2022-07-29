@@ -8,6 +8,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
+
+// context import
 import AppContext from '../Context/AppContext';
 
 ////// TODO
@@ -33,7 +36,7 @@ import AppContext from '../Context/AppContext';
 
 function Home() {
   // // context
-  const { settings, showModal, handleCloseModal } = useContext(AppContext);
+  const { showModal, handleCloseModal } = useContext(AppContext);
 
   // // state
   const [currentPhase, setCurrentPhase] = useState('focus');
@@ -43,6 +46,14 @@ function Home() {
   const [timeRunning, setTimeRunning] = useState(false);
 
   const [currentInterval, setCurrentInterval] = useState(1);
+
+  // app settings
+  const [settings, setSettings] = useState({
+    focus: 25,
+    shortBreak: 5,
+    longBreak: 15,
+    longBreakInterval: 4,
+  });
 
   // // refs
 
@@ -233,11 +244,18 @@ function Home() {
         </Row>
       </Container>
       <div>
-        <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal size='lg' show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
             <Modal.Title>Settings</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Focus Time (In Minutes)</Form.Label>
+                <Form.Control type='number' placeholder='Focus Minutes' />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
           <Modal.Footer>
             <Button variant='secondary' onClick={handleCloseModal}>
               Close

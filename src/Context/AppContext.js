@@ -11,14 +11,6 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   // // provider state
 
-  // app settings
-  const [settings, setSettings] = useState({
-    focus: 25,
-    shortBreak: 5,
-    longBreak: 15,
-    longBreakInterval: 4,
-  });
-
   // modal state
   const [showModal, setShowModal] = useState(false);
 
@@ -32,7 +24,6 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        settings,
         showModal,
         setShowModal,
         handleShowModal,
