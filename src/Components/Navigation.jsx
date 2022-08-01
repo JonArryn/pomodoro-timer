@@ -11,6 +11,8 @@ import Button from 'react-bootstrap/Button';
 // asset imports
 import { ReactComponent as GearFill } from '../Assets/gear-fill.svg';
 
+// hooks
+
 // context
 import AppContext from '../Context/AppContext';
 
@@ -20,7 +22,9 @@ import AppContext from '../Context/AppContext';
 
 // // // CODE
 function Navigation() {
-  // context
+  // // hooks
+
+  // useModal hook from context
   const { handleShowModal } = useContext(AppContext);
 
   return (
