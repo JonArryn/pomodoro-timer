@@ -1,11 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-// hooks imports
-import { useSettings } from './useSettings';
+// when settings changes, this hook needs to setTime to reflect the new settings whether it's running or not
+// how do i do this?
+// i need to know what the original time was - DONE (create state variable with currentTimes from settings)
+// i need to know what the new time is - DONE (useEffect with settings dependency)
+// i need to calculate the difference between those two
+// i need to add/subtract the difference to/from the current time using setTime
+// this could happen at any time, and the settings don't live in this hook
+// i'm thinking useEffect can be used to monitor for changes to settings, and fire off a function within it
+// on top of that, I only need to setTime if the settings for the current phase were changed
+// need to update current times after adjusting setTime
+// only need to setTime for current phase
 
-export const useTimer = () => {
+export const useTimer = (settings) => {
   // do I need settings from this hook?
-  const { settings } = useSettings();
+  // const { settings } = useContext(AppContext);
 
   // // state
   const [currentPhase, setCurrentPhase] = useState('focus');
@@ -15,6 +24,12 @@ export const useTimer = () => {
   const [timeRunning, setTimeRunning] = useState(false);
 
   const [currentInterval, setCurrentInterval] = useState(1);
+
+  const currentTimes = useRef({
+    focus: settings.focus,
+    shortBreak: settings.shortBreak,
+    longBreak: settings.longBreak,
+  });
 
   // // refs
 
@@ -123,6 +138,43 @@ export const useTimer = () => {
       clearInterval(timer.current);
     };
   }, []);
+
+  // create function that takes in currentTimes and settings
+  // call function in useEffect and pass those arguments in
+  // function should calculate difference between the two values compared in each property of both objects
+  // function should then determine if a setting was changed for the current phase
+  // should then determine if there is a difference between the two for the current phase
+  // if there is a difference, it should add/subtract milliseconds using setTime
+
+  const updateTime = useCallback(
+    (existingTimes, newTimes) => {
+      const focusDiff = newTimes.focus - existingTimes.focus;
+      const shortBreakDiff = newTimes.shortBreak - existingTimes.shortBreak;
+      const longBreakDiff = newTimes.longBreak - existingTimes.longBreak;
+
+      switch (currentPhase) {
+        case 'focus':
+          setTime((prevTime) => +(focusDiff * 60 * 1000) + prevTime);
+          break;
+        case 'shortBreak':
+          setTime((prevTime) => +(shortBreakDiff * 60 * 1000) + prevTime);
+          break;
+        case 'longBreak':
+          setTime((prevTime) => +(longBreakDiff * 60 * 1000) + prevTime);
+          break;
+        default:
+          return;
+      }
+
+      currentTimes.current = newTimes;
+      return;
+    },
+    [currentPhase]
+  );
+
+  useEffect(() => {
+    updateTime(currentTimes.current, settings);
+  }, [updateTime, settings]);
 
   return {
     currentPhase,

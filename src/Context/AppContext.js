@@ -26,7 +26,7 @@ export const AppProvider = ({ children }) => {
     convertTime,
     toggleTimer,
     manualPhaseChange,
-  } = useTimer();
+  } = useTimer(settings);
   // end provider
 
   // provder return
