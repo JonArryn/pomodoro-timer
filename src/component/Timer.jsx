@@ -7,7 +7,10 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
 // context imports
-import AppContext from '../Context/AppContext';
+import TimerContext from '../context/TimerContext';
+
+// constants imports
+import SETTINGS from '../constant/SETTINGS';
 
 function Timer() {
   // context
@@ -19,7 +22,7 @@ function Timer() {
     convertTime,
     toggleTimer,
     manualPhaseChange,
-  } = useContext(AppContext);
+  } = useContext(TimerContext);
 
   return (
     <>
@@ -36,8 +39,8 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={currentPhase === 'focus' && 'active'}
-              onClick={() => manualPhaseChange('focus')}
+              className={currentPhase === SETTINGS.FOCUS && 'active'}
+              onClick={() => manualPhaseChange(SETTINGS.FOCUS)}
             >
               Focus
             </Button>
@@ -46,8 +49,8 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={currentPhase === 'shortBreak' && 'active'}
-              onClick={() => manualPhaseChange('shortBreak')}
+              className={currentPhase === SETTINGS.SHORT_BREAK && 'active'}
+              onClick={() => manualPhaseChange(SETTINGS.SHORT_BREAK)}
             >
               Short Break
             </Button>
@@ -56,8 +59,8 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={currentPhase === 'longBreak' && 'active'}
-              onClick={() => manualPhaseChange('longBreak')}
+              className={currentPhase === SETTINGS.LONG_BREAK && 'active'}
+              onClick={() => manualPhaseChange(SETTINGS.LONG_BREAK)}
             >
               Long Break
             </Button>

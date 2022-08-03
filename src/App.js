@@ -1,8 +1,8 @@
 import './App.css';
-import Home from './Pages/Home';
-import Navigation from './Components/Navigation';
+import Home from './page/Home';
+import Navigation from './component/Navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { AppProvider } from './Context/AppContext';
+import AppProvider from './component/AppProvider';
 
 function App() {
   return (

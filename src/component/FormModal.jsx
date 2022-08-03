@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 // bootstrap imports
 import Form from 'react-bootstrap/Form';
@@ -7,15 +7,26 @@ import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function FormModal({ showModal, handleCloseModal, handleSubmit, settings }) {
-  const { focus, shortBreak, longBreak, longBreakInterval } = settings;
+// context imports
+import SettingsContext from '../context/SettingsContext';
+
+// constants imports
+import SETTINGS from '../constant/SETTINGS';
+
+function FormModal({ showModal, handleCloseModal }) {
+  // settings
+  const { currentSettings, handleSettingsChange } = useContext(SettingsContext);
 
   const [newSettings, setNewSettings] = useState({
-    focus: focus,
-    shortBreak: shortBreak,
-    longBreak: longBreak,
-    longBreakInterval: longBreakInterval,
+    [SETTINGS.FOCUS]: currentSettings.focus,
+    [SETTINGS.SHORT_BREAK]: currentSettings.shortBreak,
+    [SETTINGS.LONG_BREAK]: currentSettings.longBreak,
+    [SETTINGS.LONG_BREAK_INTERVAL]: currentSettings.longBreakInterval,
   });
+
+  // modal
+
+  // local functions
 
   const handleChange = (event) => {
     setNewSettings((prevSettings) => {
@@ -26,9 +37,11 @@ function FormModal({ showModal, handleCloseModal, handleSubmit, settings }) {
     });
   };
 
+  // component
+
   return (
     <div>
-      <Modal size='lg' show={showModal} onHide={handleCloseModal}>
+      <Modal size='md' show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
@@ -36,7 +49,7 @@ function FormModal({ showModal, handleCloseModal, handleSubmit, settings }) {
           <Form
             onSubmit={(event) => {
               event.preventDefault();
-              handleSubmit(newSettings);
+              handleSettingsChange(newSettings);
             }}
           >
             <Row className='mb-3'>
@@ -46,9 +59,9 @@ function FormModal({ showModal, handleCloseModal, handleSubmit, settings }) {
                   <Form.Control
                     type='number'
                     placeholder='Focus Minutes'
-                    defaultValue={focus}
+                    defaultValue={currentSettings.focus}
                     onChange={handleChange}
-                    data-field='focus'
+                    data-field={SETTINGS.FOCUS}
                   />
                 </Form.Group>
               </Col>
@@ -58,21 +71,9 @@ function FormModal({ showModal, handleCloseModal, handleSubmit, settings }) {
                   <Form.Control
                     type='number'
                     placeholder='Short Break Minutes'
-                    defaultValue={shortBreak}
+                    defaultValue={currentSettings.shortBreak}
                     onChange={handleChange}
-                    data-field='shortBreak'
-                  />
-                </Form.Group>
-              </Col>
-              <Col xs='auto'>
-                <Form.Group>
-                  <Form.Label>Long Break Time (In Minutes)</Form.Label>
-                  <Form.Control
-                    type='number'
-                    placeholder='Long Break Minutes'
-                    defaultValue={longBreak}
-                    onChange={handleChange}
-                    data-field='longBreak'
+                    data-field={SETTINGS.SHORT_BREAK}
                   />
                 </Form.Group>
               </Col>
@@ -80,18 +81,31 @@ function FormModal({ showModal, handleCloseModal, handleSubmit, settings }) {
             <Row className='mb-3'>
               <Col xs='auto'>
                 <Form.Group>
+                  <Form.Label>Long Break Time (In Minutes)</Form.Label>
+                  <Form.Control
+                    type='number'
+                    placeholder='Long Break Minutes'
+                    defaultValue={currentSettings.longBreak}
+                    onChange={handleChange}
+                    data-field={SETTINGS.LONG_BREAK}
+                  />
+                </Form.Group>
+              </Col>
+
+              <Col xs='auto'>
+                <Form.Group>
                   <Form.Label>Long Break Interval</Form.Label>
                   <Form.Control
                     type='number'
                     placeholder='Intervals before long break'
-                    defaultValue={longBreakInterval}
+                    defaultValue={currentSettings.longBreakInterval}
                     onChange={handleChange}
-                    data-field='longBreakInterval'
+                    data-field={SETTINGS.LONG_BREAK_INTERVAL}
                   />
                 </Form.Group>
               </Col>
             </Row>
-            <Row className='justify-content-end'>
+            <Row className='justify-content-center'>
               <Col xs='auto'>
                 <Button
                   size='lg'

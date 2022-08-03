@@ -1,23 +1,17 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 
-// when settings changes, this hook needs to setTime to reflect the new settings whether it's running or not
-// how do i do this?
-// i need to know what the original time was - DONE (create state variable with currentTimes from settings)
-// i need to know what the new time is - DONE (useEffect with settings dependency)
-// i need to calculate the difference between those two
-// i need to add/subtract the difference to/from the current time using setTime
-// this could happen at any time, and the settings don't live in this hook
-// i'm thinking useEffect can be used to monitor for changes to settings, and fire off a function within it
-// on top of that, I only need to setTime if the settings for the current phase were changed
-// need to update current times after adjusting setTime
-// only need to setTime for current phase
+// import context
+import SettingsContext from '../context/SettingsContext';
 
-export const useTimer = (settings) => {
+// import constants
+import SETTINGS from '../constant/SETTINGS';
+
+export const useTimer = () => {
   // do I need settings from this hook?
-  // const { settings } = useContext(AppContext);
+  const { currentSettings } = useContext(SettingsContext);
 
   // // state
-  const [currentPhase, setCurrentPhase] = useState('focus');
+  const [currentPhase, setCurrentPhase] = useState(SETTINGS.FOCUS);
 
   const [time, setTime] = useState(1500000);
 
@@ -26,9 +20,9 @@ export const useTimer = (settings) => {
   const [currentInterval, setCurrentInterval] = useState(1);
 
   const currentTimes = useRef({
-    focus: settings.focus,
-    shortBreak: settings.shortBreak,
-    longBreak: settings.longBreak,
+    [SETTINGS.FOCUS]: currentSettings.focus,
+    [SETTINGS.SHORT_BREAK]: currentSettings.shortBreak,
+    [SETTINGS.LONG_BREAK]: currentSettings.longBreak,
   });
 
   // // refs
@@ -75,33 +69,34 @@ export const useTimer = (settings) => {
       setTimeRunning(false);
       if (phase) {
         setCurrentPhase(phase);
-        setTime(settings[`${phase}`] * 60 * 1000);
+        setTime(currentSettings[`${phase}`] * 60 * 1000);
         return;
       } else {
         switch (true) {
-          case currentPhase === 'focus' &&
-            currentInterval < settings.longBreakInterval:
-            setCurrentPhase('shortBreak');
-            setTime(settings.shortBreak * 60 * 1000);
+          case currentPhase === SETTINGS.FOCUS &&
+            currentInterval < currentSettings.longBreakInterval:
+            setCurrentPhase(SETTINGS.SHORT_BREAK);
+            setTime(currentSettings.shortBreak * 60 * 1000);
             break;
-          case currentPhase === 'shortBreak' || currentPhase === 'longBreak':
-            setCurrentPhase('focus');
+          case currentPhase === SETTINGS.SHORT_BREAK ||
+            currentPhase === SETTINGS.LONG_BREAK:
+            setCurrentPhase(SETTINGS.FOCUS);
             setCurrentInterval((prevRound) => {
               return prevRound + 1;
             });
-            setTime(settings.pomodoro * 60 * 1000);
+            setTime(currentSettings.focus * 60 * 1000);
             break;
-          case currentPhase === 'focus' &&
-            currentInterval === settings.longBreakInterval:
-            setCurrentPhase('longBreak');
-            setTime(settings.longBreak * 60 * 1000);
+          case currentPhase === SETTINGS.FOCUS &&
+            currentInterval === currentSettings.longBreakInterval:
+            setCurrentPhase(SETTINGS.LONG_BREAK);
+            setTime(currentSettings.longBreak * 60 * 1000);
             break;
           default:
-            setCurrentPhase('focus');
+            setCurrentPhase(SETTINGS.FOCUS);
         }
       }
     },
-    [currentPhase, currentInterval, settings]
+    [currentPhase, currentInterval, currentSettings]
   );
 
   // warn on manual phase change
@@ -130,7 +125,7 @@ export const useTimer = (settings) => {
     if (time <= 0) {
       switchPhase();
     }
-  }, [time, switchPhase, settings]);
+  }, [time, switchPhase, currentSettings]);
 
   // stop timer on unmount
   useEffect(() => {
@@ -148,18 +143,17 @@ export const useTimer = (settings) => {
 
   const updateTime = useCallback(
     (existingTimes, newTimes) => {
-      const focusDiff = newTimes.focus - existingTimes.focus;
-      const shortBreakDiff = newTimes.shortBreak - existingTimes.shortBreak;
-      const longBreakDiff = newTimes.longBreak - existingTimes.longBreak;
-
       switch (currentPhase) {
-        case 'focus':
+        case SETTINGS.FOCUS:
+          const focusDiff = newTimes.focus - existingTimes.focus;
           setTime((prevTime) => +(focusDiff * 60 * 1000) + prevTime);
           break;
-        case 'shortBreak':
+        case SETTINGS.SHORT_BREAK:
+          const shortBreakDiff = newTimes.shortBreak - existingTimes.shortBreak;
           setTime((prevTime) => +(shortBreakDiff * 60 * 1000) + prevTime);
           break;
-        case 'longBreak':
+        case SETTINGS.LONG_BREAK:
+          const longBreakDiff = newTimes.longBreak - existingTimes.longBreak;
           setTime((prevTime) => +(longBreakDiff * 60 * 1000) + prevTime);
           break;
         default:
@@ -173,8 +167,8 @@ export const useTimer = (settings) => {
   );
 
   useEffect(() => {
-    updateTime(currentTimes.current, settings);
-  }, [updateTime, settings]);
+    updateTime(currentTimes.current, currentSettings);
+  }, [updateTime, currentSettings]);
 
   return {
     currentPhase,
