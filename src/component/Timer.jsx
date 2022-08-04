@@ -11,6 +11,10 @@ import TimerContext from '../context/TimerContext';
 
 // constants imports
 import SETTINGS from '../constant/SETTINGS';
+import ACTIONS from '../constant/ACTIONS';
+
+// react-icons
+import { FaFastForward } from 'react-icons/fa';
 
 function Timer() {
   // context
@@ -40,7 +44,7 @@ function Timer() {
               variant='outline-light'
               style={{ border: 'none' }}
               className={currentPhase === SETTINGS.FOCUS && 'active'}
-              onClick={() => manualPhaseChange(SETTINGS.FOCUS)}
+              onClick={() => manualPhaseChange(ACTIONS.CHANGE, SETTINGS.FOCUS)}
             >
               Focus
             </Button>
@@ -50,7 +54,9 @@ function Timer() {
               variant='outline-light'
               style={{ border: 'none' }}
               className={currentPhase === SETTINGS.SHORT_BREAK && 'active'}
-              onClick={() => manualPhaseChange(SETTINGS.SHORT_BREAK)}
+              onClick={() =>
+                manualPhaseChange(ACTIONS.CHANGE, SETTINGS.SHORT_BREAK)
+              }
             >
               Short Break
             </Button>
@@ -60,7 +66,9 @@ function Timer() {
               variant='outline-light'
               style={{ border: 'none' }}
               className={currentPhase === SETTINGS.LONG_BREAK && 'active'}
-              onClick={() => manualPhaseChange(SETTINGS.LONG_BREAK)}
+              onClick={() =>
+                manualPhaseChange(ACTIONS.CHANGE, SETTINGS.LONG_BREAK)
+              }
             >
               Long Break
             </Button>
@@ -74,9 +82,9 @@ function Timer() {
             </div>
           </Col>
         </Row>
-        {/* start button */}
-        <Row>
-          <Col>
+        {/* start and skip buttons */}
+        <Row className='align-items-center justify-content-center'>
+          <Col xs='auto'>
             <Button
               variant={timeRunning ? 'warning' : 'success'}
               className='py-2 px-5'
@@ -89,6 +97,15 @@ function Timer() {
               >
                 {timeRunning ? 'Pause' : 'Start!'}
               </span>
+            </Button>
+          </Col>
+          <Col xs='auto'>
+            <Button
+              variant='outline-light'
+              style={{ border: 'none' }}
+              onClick={() => manualPhaseChange(ACTIONS.SKIP)}
+            >
+              <FaFastForward className='fs-1 align-middle' />
             </Button>
           </Col>
         </Row>

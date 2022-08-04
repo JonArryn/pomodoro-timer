@@ -5,6 +5,7 @@ import SettingsContext from '../context/SettingsContext';
 
 // import constants
 import SETTINGS from '../constant/SETTINGS';
+import ACTIONS from '../constant/ACTIONS';
 
 export const useTimer = () => {
   // do I need settings from this hook?
@@ -13,25 +14,34 @@ export const useTimer = () => {
   // // state
   const [currentPhase, setCurrentPhase] = useState(SETTINGS.FOCUS);
 
+  // time is stored in milliseconds
+  // reduced by 1000 by toggleTimer function
   const [time, setTime] = useState(1500000);
 
+  // used in other functions fro switch statements to determine if time is currently running
   const [timeRunning, setTimeRunning] = useState(false);
 
+  // keeps track of current inerval count
   const [currentInterval, setCurrentInterval] = useState(1);
 
+  // // refs
+
+  // used as ref for interval created by toggleTimer to reduce time state variable
+  const timer = useRef();
+
+  // stores current times on mount
+  // used to update timer for current phase if settings are changed
+  // updated by updateTime function
   const currentTimes = useRef({
     [SETTINGS.FOCUS]: currentSettings.focus,
     [SETTINGS.SHORT_BREAK]: currentSettings.shortBreak,
     [SETTINGS.LONG_BREAK]: currentSettings.longBreak,
   });
 
-  // // refs
-
-  const timer = useRef();
-
   // // local functions
 
   // used in on timer component to display time in minutes:seconds
+  // takes in milliseconds and returns string displayed on main timer
   const convertTime = (milliseconds) => {
     const seconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -44,6 +54,7 @@ export const useTimer = () => {
 
   // timer start interval
   // used on timer component to start the timer on start/pause button
+  // creates and clears interval to reduce time
   const toggleTimer = () => {
     setTimeRunning((prevTimeRunning) => !prevTimeRunning);
 
@@ -60,87 +71,11 @@ export const useTimer = () => {
     }
   };
 
-  // phase change logic
-  // handles phase switching between focus, short break, long break
-  // handles manual phase changes as well as automatic phase changes from timer running out
-  const switchPhase = useCallback(
-    (phase) => {
-      clearInterval(timer.current);
-      setTimeRunning(false);
-      if (phase) {
-        setCurrentPhase(phase);
-        setTime(currentSettings[`${phase}`] * 60 * 1000);
-        return;
-      } else {
-        switch (true) {
-          case currentPhase === SETTINGS.FOCUS &&
-            currentInterval < currentSettings.longBreakInterval:
-            setCurrentPhase(SETTINGS.SHORT_BREAK);
-            setTime(currentSettings.shortBreak * 60 * 1000);
-            break;
-          case currentPhase === SETTINGS.SHORT_BREAK ||
-            currentPhase === SETTINGS.LONG_BREAK:
-            setCurrentPhase(SETTINGS.FOCUS);
-            setCurrentInterval((prevRound) => {
-              return prevRound + 1;
-            });
-            setTime(currentSettings.focus * 60 * 1000);
-            break;
-          case currentPhase === SETTINGS.FOCUS &&
-            currentInterval === currentSettings.longBreakInterval:
-            setCurrentPhase(SETTINGS.LONG_BREAK);
-            setTime(currentSettings.longBreak * 60 * 1000);
-            break;
-          default:
-            setCurrentPhase(SETTINGS.FOCUS);
-        }
-      }
-    },
-    [currentPhase, currentInterval, currentSettings]
-  );
-
-  // warn on manual phase change
-  // used in timer component phase on clicks when user tries to manually change the phase
-  const manualPhaseChange = (phase) => {
-    if (timeRunning) {
-      if (
-        window.confirm(
-          'The timer for this phase is still running, are you sure you want to switch?'
-        )
-      ) {
-        switchPhase(phase);
-      } else {
-        return;
-      }
-    } else {
-      switchPhase(phase);
-      return;
-    }
-  };
-
-  // // useEffects
-
-  // stop timer at 0 and switch phase
-  useEffect(() => {
-    if (time <= 0) {
-      switchPhase();
-    }
-  }, [time, switchPhase, currentSettings]);
-
-  // stop timer on unmount
-  useEffect(() => {
-    return () => {
-      clearInterval(timer.current);
-    };
-  }, []);
-
-  // create function that takes in currentTimes and settings
-  // call function in useEffect and pass those arguments in
-  // function should calculate difference between the two values compared in each property of both objects
-  // function should then determine if a setting was changed for the current phase
-  // should then determine if there is a difference between the two for the current phase
-  // if there is a difference, it should add/subtract milliseconds using setTime
-
+  // called by useEffect when settings are changed
+  // takes in current times and new times created by settings change
+  // based on current phase, will update 'time' state variable
+  // only does anything if settings were changed for the current phase
+  // updates currentTimes ref with new times dictated by settings change
   const updateTime = useCallback(
     (existingTimes, newTimes) => {
       switch (currentPhase) {
@@ -166,6 +101,99 @@ export const useTimer = () => {
     [currentPhase]
   );
 
+  // // // // // REFACTOR // // // // //
+
+  // used in timer component phase to handle manual phase changes
+  // use can change phase or skip phase
+  // takes in an ACTION ('change' or 'skip') and phase (only on 'change' action)
+  // 'change' calls switchPhase and passes in a phase
+  // 'skip' calls switchPhase with no phase argument
+  // 'change' action only alerts if time is running
+  // 'skip' always alerts because it will increase round count
+  const manualPhaseChange = (action, phase) => {
+    switch (true) {
+      case timeRunning && action === ACTIONS.CHANGE:
+        window.confirm(
+          'The timer for this phase is still running, are you sure you want to switch?'
+        ) && switchPhase(phase);
+        break;
+      case !timeRunning && action === ACTIONS.CHANGE:
+        switchPhase(phase);
+        break;
+      case action === ACTIONS.SKIP:
+        window.confirm(
+          'This will skip the current phase. If the current phase is a break, it will increase the round count. Are you sure?'
+        ) && switchPhase();
+        break;
+      default:
+        return;
+    }
+  };
+
+  // phase change logic
+  // handles phase switching between focus, short break, long break
+  // takes in phase argument
+  // if phase === null, then automatic phase switching logic fires
+  // if phase !== null, indicates manual change and changes to provided phase
+  const switchPhase = useCallback(
+    (phase) => {
+      // clears interval, stops timer
+      clearInterval(timer.current);
+      setTimeRunning(false);
+      // manual phase change
+      if (phase) {
+        setCurrentPhase(phase);
+        setTime(currentSettings[`${phase}`] * 60 * 1000);
+        return;
+        // auto phase change/skip phase
+      } else {
+        switch (true) {
+          case currentPhase === SETTINGS.FOCUS &&
+            currentInterval % currentSettings.longBreakInterval !== 0:
+            setCurrentPhase(SETTINGS.SHORT_BREAK);
+            setTime(currentSettings.shortBreak * 60 * 1000);
+            break;
+          case currentPhase === SETTINGS.SHORT_BREAK ||
+            currentPhase === SETTINGS.LONG_BREAK:
+            setCurrentPhase(SETTINGS.FOCUS);
+            setCurrentInterval((prevRound) => {
+              return prevRound + 1;
+            });
+            setTime(currentSettings.focus * 60 * 1000);
+            break;
+          case currentPhase === SETTINGS.FOCUS &&
+            currentInterval % currentSettings.longBreakInterval === 0:
+            setCurrentPhase(SETTINGS.LONG_BREAK);
+            setTime(currentSettings.longBreak * 60 * 1000);
+            break;
+          default:
+            setCurrentPhase(SETTINGS.FOCUS);
+        }
+      }
+    },
+    [currentPhase, currentInterval, currentSettings]
+  );
+
+  // // // // // REFACTOR // // // // //
+
+  // // useEffects
+
+  // switches phase when time gets to 0
+  useEffect(() => {
+    if (time <= 0) {
+      switchPhase();
+    }
+  }, [time, switchPhase]);
+
+  // stop timer on unmount
+  useEffect(() => {
+    return () => {
+      clearInterval(timer.current);
+    };
+  }, []);
+
+  // listens for changes in currentSettings
+  // updates time if settings were changed for current phase
   useEffect(() => {
     updateTime(currentTimes.current, currentSettings);
   }, [updateTime, currentSettings]);
