@@ -2,14 +2,18 @@ import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 
 // import context
 import SettingsContext from '../context/SettingsContext';
+import NotificationContext from '../context/NotificationContext';
+import SoundContext from '../context/SoundContext';
 
 // import constants
 import SETTINGS from '../constant/SETTINGS';
 import ACTIONS from '../constant/ACTIONS';
 
 export const useTimer = () => {
-  // do I need settings from this hook?
+  // context
   const { currentSettings } = useContext(SettingsContext);
+  const { sendNotification } = useContext(NotificationContext);
+  const { notifyTimerExpire } = useContext(SoundContext);
 
   // // state
   const [currentPhase, setCurrentPhase] = useState(SETTINGS.FOCUS);
@@ -71,6 +75,8 @@ export const useTimer = () => {
     }
   };
 
+  // // // // // REFACTOR // // // // //
+
   // called by useEffect when settings are changed
   // takes in current times and new times created by settings change
   // based on current phase, will update 'time' state variable
@@ -100,8 +106,6 @@ export const useTimer = () => {
     },
     [currentPhase]
   );
-
-  // // // // // REFACTOR // // // // //
 
   // used in timer component phase to handle manual phase changes
   // use can change phase or skip phase
@@ -181,9 +185,11 @@ export const useTimer = () => {
   // switches phase when time gets to 0
   useEffect(() => {
     if (time <= 0) {
+      notifyTimerExpire();
+      sendNotification('Pomodoro Timer', 'Time is up!');
       switchPhase();
     }
-  }, [time, switchPhase]);
+  }, [time, switchPhase, sendNotification, notifyTimerExpire]);
 
   // stop timer on unmount
   useEffect(() => {

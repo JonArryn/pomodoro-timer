@@ -10,20 +10,21 @@ import Timer from '../component/Timer';
 
 // // // TODO
 // // current task(s)
+// place current round/phase into a container for cleaner look
+// clean up current phase wording
 //
 // // next
-//
-// increase round count after each break phase
-// // future
-// provide "jump" option to skip to next phase
-// change color scheme with different phases
-// setup up pop up notifications
-// play sound when timer depletes
-// add bottom border to navbar container
-// add reset button
-// place current round/phase into a container for cleaner look
-// change long break in switchPhase to work in multiples of 4
 // (BONUS) add task manager
+//
+// // future
+// add volume controls to timer sound
+// clean up settings modal
+// change alerts to modals
+// change color scheme with different phases
+// prevent start button from shifting when skip button appears
+// add about and how to use page
+// add reset buttons
+// add dark mode
 // (BONUS) use localStorage to store state
 // (BONUS) change start/pause button to say resume if timer was paused
 // // //

@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Stack from 'react-bootstrap/Stack';
 
 // context imports
 import TimerContext from '../context/TimerContext';
@@ -31,7 +32,7 @@ function Timer() {
   return (
     <>
       <Container
-        className='text-center my-3 pb-5 pt-3 timer-tile'
+        className='text-center my-3 pb-5 pt-3 timer-tile shadow-lg'
         style={{
           maxWidth: '550px',
           borderRadius: '10px',
@@ -39,7 +40,11 @@ function Timer() {
       >
         {/* focus/break buttons */}
         <Row>
-          <Col>
+          <Stack
+            direction='horizontal'
+            gap={5}
+            className='justify-content-center align-items-center'
+          >
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
@@ -48,8 +53,6 @@ function Timer() {
             >
               Focus
             </Button>
-          </Col>
-          <Col>
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
@@ -60,8 +63,6 @@ function Timer() {
             >
               Short Break
             </Button>
-          </Col>
-          <Col>
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
@@ -72,7 +73,7 @@ function Timer() {
             >
               Long Break
             </Button>
-          </Col>
+          </Stack>
         </Row>
         {/* timer */}
         <Row>
@@ -83,8 +84,8 @@ function Timer() {
           </Col>
         </Row>
         {/* start and skip buttons */}
-        <Row className='align-items-center justify-content-center'>
-          <Col xs='auto'>
+        <Row xs='auto' className='align-items-center justify-content-center'>
+          <Col>
             <Button
               variant={timeRunning ? 'warning' : 'success'}
               className='py-2 px-5'
@@ -99,24 +100,37 @@ function Timer() {
               </span>
             </Button>
           </Col>
-          <Col xs='auto'>
-            <Button
-              variant='outline-light'
-              style={{ border: 'none' }}
-              onClick={() => manualPhaseChange(ACTIONS.SKIP)}
-            >
-              <FaFastForward className='fs-1 align-middle' />
-            </Button>
-          </Col>
+          {timeRunning && (
+            <Col className='justify-self-end'>
+              <Button
+                variant='outline-light'
+                style={{ border: 'none' }}
+                onClick={() => manualPhaseChange(ACTIONS.SKIP)}
+              >
+                <FaFastForward className='fs-1 align-middle' />
+              </Button>
+            </Col>
+          )}
         </Row>
       </Container>
-      <Container className='text-center'>
-        <Row className='justify-content-center align-items-center'>
-          <Col xs='auto'>
-            <p className='text-light fs-4'>Pomo Round: #{currentInterval}</p>
+      <Container
+        className='text-center shadow-lg timer-tile'
+        style={{
+          maxWidth: '550px',
+          borderRadius: '10px',
+        }}
+      >
+        <Row
+          className='justify-content-center align-items-center py-2'
+          xs='auto'
+        >
+          <Col>
+            <p className='text-light fs-4 m-0'>
+              Pomo Round: #{currentInterval}
+            </p>
           </Col>
-          <Col xs='auto'>
-            <p className='text-light fs-4'>Current Phase: {currentPhase}</p>
+          <Col>
+            <p className='text-light fs-4 m-0'>Current Phase: {currentPhase}</p>
           </Col>
         </Row>
       </Container>

@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Stack from 'react-bootstrap/Stack';
 
 // context imports
 import SettingsContext from '../context/SettingsContext';
@@ -52,10 +53,14 @@ function FormModal({ showModal, handleCloseModal }) {
               handleSettingsChange(newSettings);
             }}
           >
-            <Row className='mb-3'>
-              <Col xs='auto'>
+            <Row
+              className='py-3 mb-3 border border-secondary border-3'
+              style={{ borderRadius: '10px' }}
+            >
+              <div className='text-center mb-3'>Phase Times in Minutes</div>
+              <Stack direction='horizontal' gap={2}>
                 <Form.Group>
-                  <Form.Label>Focus Time (In Minutes)</Form.Label>
+                  <Form.Label>Focus Time</Form.Label>
                   <Form.Control
                     type='number'
                     placeholder='Focus Minutes'
@@ -64,10 +69,8 @@ function FormModal({ showModal, handleCloseModal }) {
                     data-field={SETTINGS.FOCUS}
                   />
                 </Form.Group>
-              </Col>
-              <Col xs='auto'>
                 <Form.Group>
-                  <Form.Label>Short Break Time (In Minutes)</Form.Label>
+                  <Form.Label>Short Break</Form.Label>
                   <Form.Control
                     type='number'
                     placeholder='Short Break Minutes'
@@ -76,12 +79,8 @@ function FormModal({ showModal, handleCloseModal }) {
                     data-field={SETTINGS.SHORT_BREAK}
                   />
                 </Form.Group>
-              </Col>
-            </Row>
-            <Row className='mb-3'>
-              <Col xs='auto'>
                 <Form.Group>
-                  <Form.Label>Long Break Time (In Minutes)</Form.Label>
+                  <Form.Label>Long Break</Form.Label>
                   <Form.Control
                     type='number'
                     placeholder='Long Break Minutes'
@@ -90,8 +89,12 @@ function FormModal({ showModal, handleCloseModal }) {
                     data-field={SETTINGS.LONG_BREAK}
                   />
                 </Form.Group>
-              </Col>
-
+              </Stack>
+            </Row>
+            <Row
+              className='mb-3 border border-secondary border-3 py-3'
+              style={{ borderRadius: '10px' }}
+            >
               <Col xs='auto'>
                 <Form.Group>
                   <Form.Label>Long Break Interval</Form.Label>

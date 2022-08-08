@@ -1,14 +1,24 @@
-#root {
-  background-color: #dc3545;
+body {
+  background: #dc3545 !important;
 }
 
-html {
-  background-color: #dc3545;
-}
-
-nav {
+.container {
   background: #dc3545;
 }
 .timer-tile {
   background: #e65766;
+}
+
+.timer-break {
+  background: blueviolet;
+  -webkit-transition: background-color 2000ms linear;
+  -ms-transition: background-color 2000ms linear;
+  transition: background-color 2000ms linear;
+}
+
+.container-break {
+  background: blueviolet;
+  -webkit-transition: background-color 2000ms linear;
+  -ms-transition: background-color 2000ms linear;
+  transition: background-color 2000ms linear;
 }
