@@ -140,7 +140,19 @@ function Timer() {
             </p>
           </Col>
           <Col>
-            <p className='text-light fs-4 m-0'>Current Phase: {currentPhase}</p>
+            <p className='text-light fs-4 m-0'>
+              Current Phase:{' '}
+              {currentPhase
+                .split('')
+                .map((letter, index) => {
+                  if (index === 0) {
+                    return letter.toUpperCase();
+                  } else if (letter === letter.toUpperCase()) {
+                    return ' ' + letter;
+                  } else return letter;
+                })
+                .join('')}
+            </p>
           </Col>
         </Row>
       </Container>
