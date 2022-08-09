@@ -93,7 +93,7 @@ function Timer() {
         </Row>
         {/* start and skip buttons */}
         <Row xs='auto' className='align-items-center justify-content-center'>
-          <Col>
+          <Col xs={{ span: 5, offset: 2 }}>
             <Button
               variant={timeRunning ? 'warning' : 'success'}
               className='py-2 px-5'
@@ -108,17 +108,16 @@ function Timer() {
               </span>
             </Button>
           </Col>
-          {timeRunning && (
-            <Col className='justify-self-end'>
-              <Button
-                variant='outline-light'
-                style={{ border: 'none' }}
-                onClick={() => manualPhaseChange(ACTIONS.SKIP)}
-              >
-                <FaFastForward className='fs-1 align-middle' />
-              </Button>
-            </Col>
-          )}
+          <Col className='justify-self-end'>
+            <Button
+              variant='outline-light'
+              style={{ border: 'none' }}
+              onClick={() => manualPhaseChange(ACTIONS.SKIP)}
+              className={!timeRunning && 'disabled hidden'}
+            >
+              <FaFastForward className='fs-1 align-middle' />
+            </Button>
+          </Col>
         </Row>
       </Container>
       <Container

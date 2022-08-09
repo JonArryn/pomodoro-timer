@@ -7,6 +7,10 @@ body {
   border-radius: 10px !important;
 }
 
+.hidden {
+  opacity: 0 !important;
+}
+
 .container-focus {
   background: #dc3545 !important;
   -webkit-transition: background-color 1000ms linear;
