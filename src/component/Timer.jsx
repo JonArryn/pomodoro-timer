@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 // bootstrap imports
 import Container from 'react-bootstrap/Container';
@@ -29,14 +29,22 @@ function Timer() {
     manualPhaseChange,
   } = useContext(TimerContext);
 
+  useEffect(() => {
+    if (currentPhase !== SETTINGS.FOCUS) {
+      document.body.classList.add('container-break');
+      document.body.classList.remove('container-focus');
+    } else if (currentPhase === SETTINGS.FOCUS) {
+      document.body.classList.add('container-focus');
+      document.body.classList.remove('container-break');
+    }
+  }, [currentPhase]);
+
   return (
     <>
       <Container
-        className='text-center my-3 pb-5 pt-3 timer-tile shadow-lg'
-        style={{
-          maxWidth: '550px',
-          borderRadius: '10px',
-        }}
+        className={`text-center my-3 pb-5 pt-3 timer-tile shadow-lg tile ${
+          currentPhase === SETTINGS.FOCUS ? 'timer-tile' : 'timer-break'
+        }`}
       >
         {/* focus/break buttons */}
         <Row>
@@ -114,14 +122,17 @@ function Timer() {
         </Row>
       </Container>
       <Container
-        className='text-center shadow-lg timer-tile'
+        className={`text-center shadow-lg timer-tile ${
+          currentPhase === SETTINGS.FOCUS ? 'timer-tile' : 'timer-break'
+        }`}
         style={{
           maxWidth: '550px',
           borderRadius: '10px',
         }}
       >
+        {/* Round and Current Phase Tile */}
         <Row
-          className='justify-content-center align-items-center py-2'
+          className='justify-content-center align-items-center py-2 tile'
           xs='auto'
         >
           <Col>

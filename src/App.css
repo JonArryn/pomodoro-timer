@@ -2,23 +2,34 @@ body {
   background: #dc3545 !important;
 }
 
-.container {
-  background: #dc3545;
+.tile {
+  max-width: 550px !important;
+  border-radius: 10px !important;
+}
+
+.container-focus {
+  background: #dc3545 !important;
+  -webkit-transition: background-color 1000ms linear;
+  -ms-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
 }
 .timer-tile {
-  background: #e65766;
+  background: #e65766 !important;
+  -webkit-transition: background-color 1000ms linear;
+  -ms-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
 }
 
 .timer-break {
-  background: blueviolet;
-  -webkit-transition: background-color 2000ms linear;
-  -ms-transition: background-color 2000ms linear;
-  transition: background-color 2000ms linear;
+  background: #26c6da !important;
+  -webkit-transition: background-color 1000ms linear;
+  -ms-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
 }
 
 .container-break {
-  background: blueviolet;
-  -webkit-transition: background-color 2000ms linear;
-  -ms-transition: background-color 2000ms linear;
-  transition: background-color 2000ms linear;
+  background: #00acc1 !important;
+  -webkit-transition: background-color 1000ms linear;
+  -ms-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
 }

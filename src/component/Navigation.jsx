@@ -21,6 +21,8 @@ import FormModal from '../component/FormModal';
 
 // context
 import NotificationContext from '../context/NotificationContext';
+import TimerContext from '../context/TimerContext';
+import SETTINGS from '../constant/SETTINGS';
 
 ////// TODO
 // create a white bottom border on navbar for some separation
@@ -30,6 +32,7 @@ import NotificationContext from '../context/NotificationContext';
 function Navigation() {
   // context
   const { permission, givePermission } = useContext(NotificationContext);
+  const { currentPhase } = useContext(TimerContext);
 
   // useModal hook from context
   const { showModal, handleShowModal, handleCloseModal } = useModal();
@@ -37,7 +40,13 @@ function Navigation() {
   return (
     <>
       <nav className='py-2'>
-        <Container className='text-center'>
+        <Container
+          className={`text-center ${
+            currentPhase === SETTINGS.FOCUS
+              ? 'container-focus'
+              : 'container-break'
+          }`}
+        >
           <Row className='align-items-center justify-content-between'>
             <Col xs='auto'>
               <h2 href='#home'>

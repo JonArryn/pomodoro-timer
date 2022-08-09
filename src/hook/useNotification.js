@@ -3,16 +3,25 @@ import { useState } from 'react';
 export const useNotification = () => {
   const [askPermission, setAskPermission] = useState(true);
   const [permission, setPermission] = useState();
+  const supported = 'Notification' in window;
 
-  if (Notification.permission === 'default' && askPermission) {
+  if (supported && Notification.permission === 'default' && askPermission) {
     setAskPermission(false);
     Notification.requestPermission().then((permissionRes) =>
       setPermission(permissionRes)
     );
-  } else if (Notification.permission === 'denied' && askPermission) {
+  } else if (
+    supported &&
+    Notification.permission === 'denied' &&
+    askPermission
+  ) {
     setAskPermission(false);
     setPermission('denied');
-  } else if (Notification.permission === 'granted' && askPermission) {
+  } else if (
+    supported &&
+    Notification.permission === 'granted' &&
+    askPermission
+  ) {
     setPermission('granted');
     setAskPermission(false);
   }
@@ -24,8 +33,6 @@ export const useNotification = () => {
   };
 
   const sendNotification = (title, body) => {
-    const supported = 'Notification' in window;
-
     if (!supported || permission !== 'granted') {
       return;
     } else if (Notification.permission === 'granted') {
