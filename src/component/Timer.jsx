@@ -121,7 +121,7 @@ function Timer() {
         </Row>
       </Container>
       <Container
-        className={`text-center shadow-lg timer-tile ${
+        className={`text-center mb-5 shadow-lg timer-tile ${
           currentPhase === SETTINGS.FOCUS ? 'timer-tile' : 'timer-break'
         }`}
         style={{

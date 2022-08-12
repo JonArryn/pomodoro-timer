@@ -53,10 +53,7 @@ function FormModal({ showModal, handleCloseModal }) {
               handleSettingsChange(newSettings);
             }}
           >
-            <Row
-              className='py-3 mb-3 border border-secondary border-3'
-              style={{ borderRadius: '10px' }}
-            >
+            <Row className='py-3 mb-3' style={{ borderRadius: '10px' }}>
               <div className='text-center mb-3'>Phase Times in Minutes</div>
               <Stack direction='horizontal' gap={2}>
                 <Form.Group>
@@ -91,10 +88,8 @@ function FormModal({ showModal, handleCloseModal }) {
                 </Form.Group>
               </Stack>
             </Row>
-            <Row
-              className='mb-3 border border-secondary border-3 py-3'
-              style={{ borderRadius: '10px' }}
-            >
+            <hr></hr>
+            <Row className='mb-3 py-3' style={{ borderRadius: '10px' }}>
               <Col xs='auto'>
                 <Form.Group>
                   <Form.Label>Long Break Interval</Form.Label>
@@ -108,6 +103,7 @@ function FormModal({ showModal, handleCloseModal }) {
                 </Form.Group>
               </Col>
             </Row>
+            <hr></hr>
             <Row className='justify-content-center'>
               <Col xs='auto'>
                 <Button

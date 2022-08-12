@@ -4,14 +4,13 @@ import React from 'react';
 // app component imports
 
 import Timer from '../component/Timer';
+import TaskList from '../component/TaskList';
 
 // hooks
 // none yet
 
 // // // TODO
 // // current task(s)
-// place current round/phase into a container for cleaner look
-// clean up current phase wording
 //
 // // next
 // (BONUS) add task manager
@@ -35,6 +34,7 @@ function Home() {
   return (
     <>
       <Timer />
+      <TaskList />
     </>
   );
 }
