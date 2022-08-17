@@ -49,17 +49,56 @@ body {
   border-left: 5px solid gray !important;
   border-right: 5px solid gray !important;
 }
+.task-item:focus {
+  background-color: #f8f9fa !important;
+  border-radius: 10px !important;
+  border-left: 5px solid black !important;
+  border-right: 5px solid black !important;
+}
+.task-item:active {
+  background-color: #f8f9fa !important;
+  border-radius: 10px !important;
+  border-left: 5px solid black !important;
+  border-right: 5px solid black !important;
+}
+
+.task-complete {
+  text-decoration: line-through !important;
+}
+
+.trash:hover {
+  color: gray !important;
+}
 
 .drag-indicator:hover {
   color: #1266f1;
 }
 
+.task-pencil {
+  color: #6c757d !important;
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0% !important;
+}
+.task-check {
+  color: #6c757d !important;
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0% !important;
+}
+.task-trash {
+  color: #6c757d !important;
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0% !important;
+}
+
 .task-pencil:hover {
-  color: #00acc1;
+  color: #00acc1 !important;
 }
 .task-check:hover {
-  color: #00b74a;
+  color: #00b74a !important;
 }
 .task-trash:hover {
-  color: #dc3545;
+  color: #dc3545 !important;
 }
