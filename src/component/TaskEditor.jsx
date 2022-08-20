@@ -1,20 +1,30 @@
 import React, { useState, useContext } from 'react';
 
+// CONSTANTS import
+import TASK_ACTIONS from '../constant/TASK_ACTIONS';
+
+// bootstrap imports
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 
+// context imports
 import TaskListContext from '../context/TaskListContext';
 
 function TaskEditor({ task }) {
-  const { cancelEdit, saveEdit } = useContext(TaskListContext);
+  // contexts
+  const taskList = useContext(TaskListContext);
+
+  // local state
   const [taskText, setTaskText] = useState(task.text);
 
+  // update local state
   const onChange = (event) => {
     setTaskText(() => event.target.value);
   };
+
   return (
     <Row className='mx-1 mb-2'>
       <div className='bg-light p-3 tile'>
@@ -41,14 +51,16 @@ function TaskEditor({ task }) {
               <Button
                 variant='primary'
                 size='sm'
-                onClick={() => saveEdit(task.id, taskText)}
+                onClick={() => taskList.saveTask(task.id, taskText)}
               >
                 Save
               </Button>
               <Button
                 variant='secondary'
                 size='sm'
-                onClick={() => cancelEdit(task.id)}
+                onClick={() =>
+                  taskList.updateTask(task.id, TASK_ACTIONS.CANCEL)
+                }
               >
                 Cancel
               </Button>

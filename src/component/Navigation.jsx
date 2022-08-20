@@ -17,12 +17,11 @@ import { IoNotificationsSharp } from 'react-icons/io5';
 import { useModal } from '../hook/useModal';
 
 // app components
-import FormModal from '../component/FormModal';
+import SettingsModal from './SettingsModal';
 
 // context
 import NotificationContext from '../context/NotificationContext';
 import TimerContext from '../context/TimerContext';
-import SETTINGS from '../constant/SETTINGS';
 
 ////// TODO
 // create a white bottom border on navbar for some separation
@@ -31,20 +30,18 @@ import SETTINGS from '../constant/SETTINGS';
 // // // CODE
 function Navigation() {
   // context
-  const { permission, givePermission } = useContext(NotificationContext);
-  const { currentPhase } = useContext(TimerContext);
+  const notification = useContext(NotificationContext);
+  const { checkFocusPhase: timerCheckFocusPhase } = useContext(TimerContext);
 
   // useModal hook from context
-  const { showModal, handleShowModal, handleCloseModal } = useModal();
+  const settingsModal = useModal();
 
   return (
     <>
       <nav className='py-2'>
         <Container
           className={`text-center ${
-            currentPhase === SETTINGS.FOCUS
-              ? 'container-focus'
-              : 'container-break'
+            timerCheckFocusPhase() ? 'container-focus' : 'container-break'
           }`}
         >
           <Row className='align-items-center justify-content-between'>
@@ -55,14 +52,20 @@ function Navigation() {
             </Col>
             <Col xs='auto'>
               <Stack direction='horizontal' gap={3}>
-                <Button variant='outline-light' onClick={handleShowModal}>
+                <Button
+                  variant='outline-light'
+                  onClick={settingsModal.handleShowModal}
+                >
                   <div>
                     <GearFill />
                     <span className='align-middle'> Settings</span>
                   </div>
                 </Button>
-                {permission === 'default' ? (
-                  <Button variant='outline-secondary' onClick={givePermission}>
+                {notification.permission === 'default' ? (
+                  <Button
+                    variant='outline-secondary'
+                    onClick={notification.givePermission}
+                  >
                     <IoNotificationsOffSharp className='fs-5 text-light' />
 
                     <span className='text-light'> Turn On Notifications</span>
@@ -71,13 +74,14 @@ function Navigation() {
                   <div>
                     <IoNotificationsSharp
                       className={`fs-5 me-1 ${
-                        permission === 'granted'
+                        notification.permission === 'granted'
                           ? 'text-warning'
                           : 'text-secondary'
                       }`}
                     />
                     <span className='text-light'>
-                      Notifications {permission === 'granted' ? 'On' : 'Off'}
+                      Notifications{' '}
+                      {notification.permission === 'granted' ? 'On' : 'Off'}
                     </span>
                   </div>
                 )}
@@ -86,7 +90,10 @@ function Navigation() {
           </Row>
         </Container>
       </nav>
-      <FormModal showModal={showModal} handleCloseModal={handleCloseModal} />
+      <SettingsModal
+        showModal={settingsModal.showModal}
+        handleCloseModal={settingsModal.handleCloseModal}
+      />
     </>
   );
 }

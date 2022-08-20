@@ -6,12 +6,10 @@ import AppProvider from './component/AppProvider';
 
 function App() {
   return (
-    <>
-      <AppProvider>
-        <Navigation />
-        <Home />
-      </AppProvider>
-    </>
+    <AppProvider>
+      <Navigation />
+      <Home />
+    </AppProvider>
   );
 }
 

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+
+// constants imports
 import { DEFAULT_VALUES as SETTINGS_DEFAULT_VALUES } from '../constant/SETTINGS';
 
 export const useSettings = () => {

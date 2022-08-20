@@ -7,7 +7,7 @@ import SoundContext from '../context/SoundContext';
 
 // import constants
 import SETTINGS from '../constant/SETTINGS';
-import ACTIONS from '../constant/ACTIONS';
+import ACTIONS from '../constant/TIMER_ACTIONS';
 
 export const useTimer = () => {
   // context
@@ -75,6 +75,16 @@ export const useTimer = () => {
     }
   };
 
+  const checkFocusPhase = useCallback(() => {
+    return currentPhase === SETTINGS.FOCUS;
+  }, [currentPhase]);
+  const checkShortBreakPhase = useCallback(() => {
+    return currentPhase === SETTINGS.SHORT_BREAK;
+  }, [currentPhase]);
+  const checkLongBreakPhase = useCallback(() => {
+    return currentPhase === SETTINGS.LONG_BREAK;
+  }, [currentPhase]);
+
   // // // // // REFACTOR // // // // //
 
   // called by useEffect when settings are changed
@@ -84,16 +94,16 @@ export const useTimer = () => {
   // updates currentTimes ref with new times dictated by settings change
   const updateTime = useCallback(
     (existingTimes, newTimes) => {
-      switch (currentPhase) {
-        case SETTINGS.FOCUS:
+      switch (true) {
+        case checkFocusPhase():
           const focusDiff = newTimes.focus - existingTimes.focus;
           setTime((prevTime) => +(focusDiff * 60 * 1000) + prevTime);
           break;
-        case SETTINGS.SHORT_BREAK:
+        case checkShortBreakPhase():
           const shortBreakDiff = newTimes.shortBreak - existingTimes.shortBreak;
           setTime((prevTime) => +(shortBreakDiff * 60 * 1000) + prevTime);
           break;
-        case SETTINGS.LONG_BREAK:
+        case checkLongBreakPhase():
           const longBreakDiff = newTimes.longBreak - existingTimes.longBreak;
           setTime((prevTime) => +(longBreakDiff * 60 * 1000) + prevTime);
           break;
@@ -104,7 +114,7 @@ export const useTimer = () => {
       currentTimes.current = newTimes;
       return;
     },
-    [currentPhase]
+    [checkFocusPhase, checkShortBreakPhase, checkLongBreakPhase]
   );
 
   // used in timer component phase to handle manual phase changes
@@ -152,20 +162,19 @@ export const useTimer = () => {
         // auto phase change/skip phase
       } else {
         switch (true) {
-          case currentPhase === SETTINGS.FOCUS &&
+          case checkFocusPhase() &&
             currentInterval % currentSettings.longBreakInterval !== 0:
             setCurrentPhase(SETTINGS.SHORT_BREAK);
             setTime(currentSettings.shortBreak * 60 * 1000);
             break;
-          case currentPhase === SETTINGS.SHORT_BREAK ||
-            currentPhase === SETTINGS.LONG_BREAK:
+          case checkShortBreakPhase() || checkLongBreakPhase():
             setCurrentPhase(SETTINGS.FOCUS);
             setCurrentInterval((prevRound) => {
               return prevRound + 1;
             });
             setTime(currentSettings.focus * 60 * 1000);
             break;
-          case currentPhase === SETTINGS.FOCUS &&
+          case checkFocusPhase() &&
             currentInterval % currentSettings.longBreakInterval === 0:
             setCurrentPhase(SETTINGS.LONG_BREAK);
             setTime(currentSettings.longBreak * 60 * 1000);
@@ -175,7 +184,13 @@ export const useTimer = () => {
         }
       }
     },
-    [currentPhase, currentInterval, currentSettings]
+    [
+      checkFocusPhase,
+      checkShortBreakPhase,
+      checkLongBreakPhase,
+      currentInterval,
+      currentSettings,
+    ]
   );
 
   // // // // // REFACTOR // // // // //
@@ -212,5 +227,8 @@ export const useTimer = () => {
     convertTime,
     toggleTimer,
     manualPhaseChange,
+    checkFocusPhase,
+    checkShortBreakPhase,
+    checkLongBreakPhase,
   };
 };

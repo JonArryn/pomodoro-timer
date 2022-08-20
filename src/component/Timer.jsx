@@ -12,38 +12,30 @@ import TimerContext from '../context/TimerContext';
 
 // constants imports
 import SETTINGS from '../constant/SETTINGS';
-import ACTIONS from '../constant/ACTIONS';
+import ACTIONS from '../constant/TIMER_ACTIONS';
 
 // react-icons
 import { FaFastForward } from 'react-icons/fa';
 
 function Timer() {
   // context
-  const {
-    currentPhase,
-    currentInterval,
-    time,
-    timeRunning,
-    convertTime,
-    toggleTimer,
-    manualPhaseChange,
-  } = useContext(TimerContext);
+  const timer = useContext(TimerContext);
 
   useEffect(() => {
-    if (currentPhase !== SETTINGS.FOCUS) {
+    if (!timer.checkFocusPhase()) {
       document.body.classList.add('container-break');
       document.body.classList.remove('container-focus');
-    } else if (currentPhase === SETTINGS.FOCUS) {
+    } else if (timer.checkFocusPhase()) {
       document.body.classList.add('container-focus');
       document.body.classList.remove('container-break');
     }
-  }, [currentPhase]);
+  }, [timer]);
 
   return (
     <>
       <Container
         className={`text-center my-3 pb-5 pt-3 timer-tile shadow-lg tile ${
-          currentPhase === SETTINGS.FOCUS ? 'timer-tile' : 'timer-break'
+          timer.checkFocusPhase() ? 'timer-tile' : 'timer-break'
         }`}
       >
         {/* focus/break buttons */}
@@ -56,17 +48,19 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={currentPhase === SETTINGS.FOCUS && 'active'}
-              onClick={() => manualPhaseChange(ACTIONS.CHANGE, SETTINGS.FOCUS)}
+              className={timer.checkFocusPhase() && 'active'}
+              onClick={() =>
+                timer.manualPhaseChange(ACTIONS.CHANGE, SETTINGS.FOCUS)
+              }
             >
               Focus
             </Button>
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={currentPhase === SETTINGS.SHORT_BREAK && 'active'}
+              className={timer.checkShortBreakPhase() && 'active'}
               onClick={() =>
-                manualPhaseChange(ACTIONS.CHANGE, SETTINGS.SHORT_BREAK)
+                timer.manualPhaseChange(ACTIONS.CHANGE, SETTINGS.SHORT_BREAK)
               }
             >
               Short Break
@@ -74,9 +68,11 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={currentPhase === SETTINGS.LONG_BREAK && 'active'}
+              className={
+                timer.checkLongBreakPhase === SETTINGS.LONG_BREAK && 'active'
+              }
               onClick={() =>
-                manualPhaseChange(ACTIONS.CHANGE, SETTINGS.LONG_BREAK)
+                timer.manualPhaseChange(ACTIONS.CHANGE, SETTINGS.LONG_BREAK)
               }
             >
               Long Break
@@ -87,7 +83,7 @@ function Timer() {
         <Row>
           <Col>
             <div className='text-light fw-bold' style={{ fontSize: '120px' }}>
-              {convertTime(time)}
+              {timer.convertTime(timer.time)}
             </div>
           </Col>
         </Row>
@@ -95,16 +91,16 @@ function Timer() {
         <Row xs='auto' className='align-items-center justify-content-center'>
           <Col xs={{ span: 5, offset: 2 }}>
             <Button
-              variant={timeRunning ? 'warning' : 'success'}
+              variant={timer.timeRunning ? 'warning' : 'success'}
               className='py-2 px-5'
-              onClick={toggleTimer}
+              onClick={timer.toggleTimer}
             >
               <span
                 className={`fs-1 fw-bold ${
-                  timeRunning ? 'text-dark' : 'text-light'
+                  timer.timeRunning ? 'text-dark' : 'text-light'
                 }`}
               >
-                {timeRunning ? 'Pause' : 'Start!'}
+                {timer.timeRunning ? 'Pause' : 'Start!'}
               </span>
             </Button>
           </Col>
@@ -112,8 +108,8 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              onClick={() => manualPhaseChange(ACTIONS.SKIP)}
-              className={!timeRunning && 'disabled hidden'}
+              onClick={() => timer.manualPhaseChange(ACTIONS.SKIP)}
+              className={!timer.timeRunning && 'disabled hidden'}
             >
               <FaFastForward className='fs-1 align-middle' />
             </Button>
@@ -122,7 +118,7 @@ function Timer() {
       </Container>
       <Container
         className={`text-center mb-5 shadow-lg timer-tile ${
-          currentPhase === SETTINGS.FOCUS ? 'timer-tile' : 'timer-break'
+          timer.checkFocusPhase() ? 'timer-tile' : 'timer-break'
         }`}
         style={{
           maxWidth: '550px',
@@ -136,13 +132,13 @@ function Timer() {
         >
           <Col>
             <p className='text-light fs-4 m-0'>
-              Pomo Round: #{currentInterval}
+              Pomo Round: #{timer.currentInterval}
             </p>
           </Col>
           <Col>
             <p className='text-light fs-4 m-0'>
               Current Phase:{' '}
-              {currentPhase
+              {timer.currentPhase
                 .split('')
                 .map((letter, index) => {
                   if (index === 0) {

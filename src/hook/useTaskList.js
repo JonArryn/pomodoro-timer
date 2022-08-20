@@ -25,37 +25,18 @@ export const useTaskList = () => {
     });
   };
 
-  // not wired up yet, not used yet
-  const makeActive = (taskId) => {
+  // updates task object property, components provide TASK_ACTION from CONSTANTS when invoked to determine which key:value of the task object to update
+  const updateTask = (taskId, TASK_ACTION) => {
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
-        return { ...task, isActive: true };
+        return { ...task, ...TASK_ACTION };
       } else return task;
     });
     setTasks(updatedTasks);
   };
 
-  const editTask = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, isEdit: true };
-      } else return task;
-    });
-    setTasks(updatedTasks);
-  };
-
-  const cancelEdit = (taskId) => {
-    const updatedTasks = tasks
-      .filter((task) => task.id !== taskId || !task.isNew)
-      .map((task) => {
-        if (task.id === taskId) {
-          return { ...task, isEdit: false };
-        } else return task;
-      });
-    setTasks(updatedTasks);
-  };
-
-  const saveEdit = (taskId, taskText) => {
+  // saves task after edits are made, takes in taskText from component local state
+  const saveTask = (taskId, taskText) => {
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
         return { ...task, isEdit: false, text: taskText, isNew: false };
@@ -64,52 +45,10 @@ export const useTaskList = () => {
     setTasks(updatedTasks);
   };
 
-  const completeTask = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, isComplete: true };
-      } else return task;
-    });
-    setTasks(updatedTasks);
-  };
-
-  const deleteTask = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, isDeleted: true };
-      } else return task;
-    });
-    setTasks(updatedTasks);
-  };
-
-  const restoreTask = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, isDeleted: false };
-      } else return task;
-    });
-    setTasks(updatedTasks);
-  };
-
-  const undoComplete = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, isComplete: false };
-      } else return task;
-    });
-    setTasks(updatedTasks);
-  };
-
   return {
     tasks,
     addTask,
-    editTask,
-    cancelEdit,
-    saveEdit,
-    completeTask,
-    deleteTask,
-    makeActive,
-    restoreTask,
-    undoComplete,
+    saveTask,
+    updateTask,
   };
 };

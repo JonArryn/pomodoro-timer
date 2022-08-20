@@ -14,7 +14,7 @@ import SettingsContext from '../context/SettingsContext';
 // constants imports
 import SETTINGS from '../constant/SETTINGS';
 
-function FormModal({ showModal, handleCloseModal }) {
+function SettingsModal({ showModal, handleCloseModal }) {
   // settings
   const { currentSettings, handleSettingsChange } = useContext(SettingsContext);
 
@@ -132,4 +132,4 @@ function FormModal({ showModal, handleCloseModal }) {
   );
 }
 
-export default FormModal;
+export default SettingsModal;

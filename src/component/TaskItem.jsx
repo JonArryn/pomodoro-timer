@@ -1,22 +1,28 @@
 import React, { useContext } from 'react';
 
+// CONSTANTS imports
+import TASK_ACTIONS from '../constant/TASK_ACTIONS';
+
+// bootstrap imports
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 
+// icon imports
 import { MdDragIndicator } from 'react-icons/md';
 import { FaEdit, FaCheckCircle, FaTrashAlt, FaUndoAlt } from 'react-icons/fa';
 
+// context imports
 import TaskListContext from '../context/TaskListContext';
 
 function TaskItem({ task }) {
-  const { editTask, completeTask, undoComplete, deleteTask } =
-    useContext(TaskListContext);
+  // contexts
+  const taskList = useContext(TaskListContext);
 
   return (
     <Row className='mx-1 mb-2'>
-      <Button variant='light' className='task-item p-3 tile' type='button'>
+      <div variant='light' className='task-item p-3 tile' type='button'>
         <Row
           xs='auto'
           className='text-secondary align-items-center justify-content-between'
@@ -45,7 +51,7 @@ function TaskItem({ task }) {
                 className={`fs-5 task-pencil`}
                 onClick={(event) => {
                   event.stopPropagation();
-                  editTask(+event.target.id);
+                  taskList.updateTask(+event.target.id, TASK_ACTIONS.EDIT);
                 }}
               >
                 <FaEdit className='p-0 m-0' pointerEvents='none' />
@@ -57,7 +63,7 @@ function TaskItem({ task }) {
                   className='fs-5 task-check'
                   onClick={(event) => {
                     event.stopPropagation();
-                    undoComplete(+event.target.id);
+                    taskList.updateTask(+event.target.id, TASK_ACTIONS.UNDO);
                   }}
                 >
                   <FaUndoAlt pointerEvents='none' />
@@ -69,7 +75,10 @@ function TaskItem({ task }) {
                   className='fs-5 task-check'
                   onClick={(event) => {
                     event.stopPropagation();
-                    completeTask(+event.target.id);
+                    taskList.updateTask(
+                      +event.target.id,
+                      TASK_ACTIONS.COMPLETE
+                    );
                   }}
                 >
                   <FaCheckCircle pointerEvents='none' />
@@ -82,7 +91,7 @@ function TaskItem({ task }) {
                 className='fs-5 task-trash'
                 onClick={(event) => {
                   event.stopPropagation();
-                  deleteTask(+event.target.id);
+                  taskList.updateTask(+event.target.id, TASK_ACTIONS.DELETE);
                 }}
               >
                 <FaTrashAlt pointerEvents='none' />
@@ -90,7 +99,7 @@ function TaskItem({ task }) {
             </Stack>
           </Col>
         </Row>
-      </Button>
+      </div>
     </Row>
   );
 }
