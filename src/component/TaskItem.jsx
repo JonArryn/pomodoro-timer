@@ -36,7 +36,9 @@ function TaskItem({ task }) {
               task.isComplete && 'task-complete'
             }`}
           >
-            <span className={`align-middle text-dark fs-6 `}>{task.text}</span>
+            <span className={`align-middle text-dark fs-6 text-break`}>
+              {task.text}
+            </span>
           </Col>
 
           <Col xs={3}>

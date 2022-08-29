@@ -13,6 +13,10 @@ import Button from 'react-bootstrap/Button';
 // context imports
 import TaskListContext from '../context/TaskListContext';
 
+// // // // BUGS
+// // pressing enter on a task refreshes page
+// maybe handle onSubmit rather than click?
+
 function TaskEditor({ task }) {
   // contexts
   const taskList = useContext(TaskListContext);
@@ -37,7 +41,7 @@ function TaskEditor({ task }) {
               <Form.Group>
                 <Form.Label>What's On Your List?</Form.Label>
                 <Form.Control
-                  as='textarea'
+                  type='text'
                   rows={1}
                   placeholder='Enter Task Info...'
                   value={taskText}
@@ -52,6 +56,7 @@ function TaskEditor({ task }) {
                 variant='primary'
                 size='sm'
                 onClick={() => taskList.saveTask(task.id, taskText)}
+                disabled={!taskText}
               >
                 Save
               </Button>

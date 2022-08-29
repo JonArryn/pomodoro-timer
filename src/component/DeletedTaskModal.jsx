@@ -39,7 +39,7 @@ function DeletedTaskModal({ showModal, handleCloseModal }) {
                     size='sm'
                     id={task.id}
                     onClick={(event) =>
-                      taskList.UpdateTask(
+                      taskList.updateTask(
                         +event.target.id,
                         TASK_ACTIONS.RESTORE
                       )

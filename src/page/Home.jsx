@@ -6,8 +6,8 @@ import React from 'react';
 import Timer from '../component/Timer';
 import TaskList from '../component/TaskList';
 
-// hooks
-// none yet
+// context
+import { TaskListProvider } from '../context/TaskListContext';
 
 // // // TODO
 // // current task(s)
@@ -29,7 +29,9 @@ function Home() {
   return (
     <>
       <Timer />
-      <TaskList />
+      <TaskListProvider>
+        <TaskList />
+      </TaskListProvider>
     </>
   );
 }

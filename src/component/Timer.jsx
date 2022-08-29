@@ -68,9 +68,7 @@ function Timer() {
             <Button
               variant='outline-light'
               style={{ border: 'none' }}
-              className={
-                timer.checkLongBreakPhase === SETTINGS.LONG_BREAK && 'active'
-              }
+              className={timer.checkLongBreakPhase() && 'active'}
               onClick={() =>
                 timer.manualPhaseChange(ACTIONS.CHANGE, SETTINGS.LONG_BREAK)
               }
